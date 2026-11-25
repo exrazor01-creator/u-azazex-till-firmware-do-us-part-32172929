@@ -87,6 +87,15 @@ def _reject_forbidden(text):
             raise ValueError("entry must stay one clean line")
 
 
+def _reject_not_one_sentence(text):
+    # The vow is one tight sentence (see README): a second period
+    # would mean an edit split it in two, and a missing final period
+    # would mean the ending was cut off. Exactly one period, and it
+    # must close the line.
+    if text.count(".") != 1 or not text.endswith("."):
+        raise ValueError("entry must be a single sentence ending in '.'")
+
+
 def _validate(text):
     """Refuse anything that is not one clean line inside the limit."""
     if not isinstance(text, str):
@@ -98,6 +107,7 @@ def _validate(text):
         raise ValueError("entry runs past its character limit")
     _reject_padding(text)
     _reject_forbidden(text)
+    _reject_not_one_sentence(text)
     return text
 
 
